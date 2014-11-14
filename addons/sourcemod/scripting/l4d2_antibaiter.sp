@@ -45,7 +45,7 @@ public Plugin:myinfo =
 	name = "L4D2 Antibaiter",
 	author = "Visor",
 	description = "Makes you think twice before attempting to bait that shit",
-	version = "1.0",
+	version = "1.2",
 	url = "https://github.com/ConfoglTeam/ProMod"
 };
 
@@ -65,16 +65,7 @@ public OnPluginStart()
 #if DEBUG
 public Action:RegisterSI(client, args)
 {
-	for (new i = 1; i <= MaxClients; i++) 
-	{
-		if (!IsInfected(i)) continue;
-		if (IsPlayerAlive(i))
-		{
-			zombieclass[i] = GetZombieClass(i);
-			aliveSince[i] = GetGameTime();
-			PrintToChatAll("\x03[Antibaiter DEBUG] Registered player \x04%N\x01, zombieclass \x05%d\x01", i, _:zombieclass[i]);
-		}
-	}
+	OnRoundIsLive();
 }
 #endif
 
@@ -86,6 +77,19 @@ public OnConfigsExecuted()
 	minProgress = GetConVarFloat(hCvarMinProgressThreshold);
 }
 
+public OnRoundIsLive()
+{
+	for (new i = 1; i <= MaxClients; i++) 
+	{
+		if (!IsInfected(i)) continue;
+		if (IsPlayerAlive(i))
+		{
+			zombieclass[i] = GetZombieClass(i);
+			aliveSince[i] = GetGameTime();
+		}
+	}
+}
+	
 public Action:AntibaiterThink(Handle:timer) 
 {
 	if (IsInReady() || IsInPause() || IsPanicEventInProgress() || L4D2Direct_GetTankCount() > 0)
@@ -99,7 +103,7 @@ public Action:AntibaiterThink(Handle:timer)
 	new eligibleZombies;
 	for (new i = 1; i <= MaxClients; i++) 
 	{
-		if (!IsInfected(i)/* || IsFakeClient(i)*/) continue;
+		if (!IsInfected(i) || IsFakeClient(i)) continue;
 		if (IsPlayerAlive(i))
 		{
 			zombieclass[i] = GetZombieClass(i);
@@ -303,7 +307,17 @@ bool:IsIncapped(client)
 bool:IsPanicEventInProgress()
 {
 	new CountdownTimer:pPanicCountdown = CountdownTimer:(L4D2_GetCDirectorScriptedEventManager() + Address:300);
-	return !CTimer_IsElapsed(pPanicCountdown);
+	if (!CTimer_IsElapsed(pPanicCountdown))
+	{
+		return true;
+	}
+	
+	if (CTimer_HasStarted(L4D2Direct_GetMobSpawnTimer()))
+	{
+		return RoundFloat(CTimer_GetRemainingTime(L4D2Direct_GetMobSpawnTimer())) <= 10;
+	}
+	
+	return false;
 }
 
 stock Address:L4D2_GetCDirectorScriptedEventManager()
