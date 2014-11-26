@@ -7,10 +7,10 @@ new Handle:z_mob_spawn_max_size;
 
 public Plugin:myinfo = 
 {
-    name = "Boomer Horde Equalizer",
-    author = "Visor, Jacob",
-    version = "1.1",
-    description = "Fixes boomer hordes being different sizes based on wandering commons.",
+    	name = "Boomer Horde Equalizer",
+    	author = "Visor, Jacob",
+    	version = "1.1",
+    	description = "Fixes boomer hordes being different sizes based on wandering commons.",
 	url = "https://github.com/Attano"
 };
 
