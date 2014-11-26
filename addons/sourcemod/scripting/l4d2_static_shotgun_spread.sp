@@ -4,9 +4,50 @@
 
 new Handle:hRing1BulletsCvar;
 new Handle:hRing1FactorCvar;
+new Handle:hCenterPelletCvar;
 
 new g_BulletOffsets[] = { 0x11, 0x1c, 0x29, 0x3d };
 new g_FactorOffset = 0x2e;
+new g_CenterPelletOffset = -0x31;
+
+public Plugin:myinfo = 
+{
+    name = "L4D2 Static Shotgun Spread",
+    author = "Jahze, Visor",
+    version = "1.1",
+    description = "^",
+	url = "https://github.com/Attano"
+};
+
+public OnPluginStart()
+{
+	hRing1BulletsCvar = CreateConVar("sgspread_ring1_bullets", "3");
+	hRing1FactorCvar = CreateConVar("sgspread_ring1_factor", "2");
+	hCenterPelletCvar = CreateConVar("sgspread_center_pellet", "1", "0 : center pellet off; 1 : on", FCVAR_PLUGIN, true, 0.0, true, 1.0);
+
+	HookConVarChange(hRing1BulletsCvar, OnRing1BulletsChange);
+	HookConVarChange(hRing1FactorCvar, OnRing1FactorChange);
+	HookConVarChange(hCenterPelletCvar, OnCenterPelletChange);
+}
+
+static HotPatchCenterPellet(newValue)
+{
+	if (IsPlatformWindows())
+	{
+		LogMessage("Static shotgun spread not supported on windows");
+		return;
+	}
+
+	new Address:addr = GetPatchAddress("sgspread");
+	
+	new currentValue = LoadFromAddress(addr + Address:g_CenterPelletOffset, NumberType_Int8);
+	if (currentValue == newValue)
+	{
+		return;
+	}
+	
+	StoreToAddress(addr + Address:g_CenterPelletOffset, newValue, NumberType_Int8);
+}
 
 static HotPatchBullets(nBullets)
 {
@@ -40,15 +81,6 @@ static HotPatchFactor(factor)
 	StoreToAddress(addr + Address:g_FactorOffset, factor, NumberType_Int32);
 }
 
-public OnPluginStart()
-{
-	hRing1BulletsCvar = CreateConVar("sgspread_ring1_bullets", "3");
-	hRing1FactorCvar = CreateConVar("sgspread_ring1_factor", "2");
-
-	HookConVarChange(hRing1BulletsCvar, OnRing1BulletsChange);
-	HookConVarChange(hRing1FactorCvar, OnRing1FactorChange);
-}
-
 public OnRing1BulletsChange(Handle:cvar, const String:oldVal[], const String:newVal[])
 {
 	new nBullets = StringToInt(newVal);
@@ -65,11 +97,20 @@ public OnRing1FactorChange(Handle:cvar, const String:oldVal[], const String:newV
 		HotPatchFactor(factor);
 }
 
+public OnCenterPelletChange(Handle:cvar, const String:oldVal[], const String:newVal[])
+{
+	new value = StringToInt(newVal);
+
+	if (IsPatchApplied("sgspread"))
+		HotPatchCenterPellet(value);
+}
+
 public OnPatchApplied(const String:name[])
 {
 	if (StrEqual("sgspread", name))
 	{
 		HotPatchBullets(GetConVarInt(hRing1BulletsCvar));
 		HotPatchFactor(GetConVarInt(hRing1FactorCvar));
+		HotPatchCenterPellet(GetConVarInt(hCenterPelletCvar));
 	}
 }

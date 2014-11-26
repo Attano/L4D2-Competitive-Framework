@@ -24,12 +24,15 @@ new Handle:hPenaltyIncreaseCvar;
 
 new g_iPenaltyIncrease;
 
+new bool:g_NoHunterM2 = false;
+
 public Plugin:myinfo =
 {
     name        = "L4D2 M2 Control",
-    author      = "Jahze",
-    version     = "1.1",
-    description = "Blocks instant repounces and gives maximum m2 penalty after a deadstop"
+    author      = "Jahze, Visor",
+    version     = "1.3",
+    description = "Blocks instant repounces and gives m2 penalty after a deadstop",
+	url 		= "https://github.com/Attano/Equilibrium"
 }
 
 public OnPluginStart() {
@@ -45,34 +48,45 @@ public OnPluginStart() {
     g_iPenaltyIncrease = GetConVarInt(hPenaltyIncreaseCvar);
 }
 
+public OnAllPluginsLoaded()
+{
+	g_NoHunterM2 = (FindPluginByFile("l4d2_no_hunter_deadstops") != INVALID_HANDLE);
+}
+
 public PenaltyIncreaseChange(Handle:hCvar, const String:oldVal[], const String:newVal[]) {
     g_iPenaltyIncrease = StringToInt(newVal);
 }
 
 public Action:OutSkilled(Handle:event, const String:name[], bool:dontBroadcast) {
-    new shovee = GetClientOfUserId(GetEventInt(event, "userid"));
-    new shover = GetClientOfUserId(GetEventInt(event, "attacker"));
+	new shovee = GetClientOfUserId(GetEventInt(event, "userid"));
+	new shover = GetClientOfUserId(GetEventInt(event, "attacker"));
 
-    if (!IsSurvivor(shover) || !IsInfected(shovee))
-        return;
+	if (!IsSurvivor(shover) || !IsInfected(shovee))
+		return;
 
-    new L4D2_Infected:zClass = GetInfectedClass(shovee);
+	new L4D2_Infected:zClass = GetInfectedClass(shovee);
 
-    if (zClass == L4D2Infected_Hunter || zClass == L4D2Infected_Jockey) {
-        new maxPenalty = GetConVarInt(hMaxShovePenaltyCvar);
-        new penalty = L4D2Direct_GetShovePenalty(shover);
+	if (zClass == L4D2Infected_Hunter || zClass == L4D2Infected_Jockey || zClass == L4D2Infected_Smoker) {
+		new maxPenalty = GetConVarInt(hMaxShovePenaltyCvar);
+		new penalty = L4D2Direct_GetShovePenalty(shover);
 
-        penalty += g_iPenaltyIncrease;
-        if (penalty > maxPenalty) {
-            penalty = maxPenalty;
-        }
+		penalty += g_iPenaltyIncrease;
+		if (penalty > maxPenalty) {
+			penalty = maxPenalty;
+		}
 
-        L4D2Direct_SetShovePenalty(shover, penalty);
-        L4D2Direct_SetNextShoveTime(shover, CalcNextShoveTime(penalty, maxPenalty));
+		L4D2Direct_SetShovePenalty(shover, penalty);
+		L4D2Direct_SetNextShoveTime(shover, CalcNextShoveTime(penalty, maxPenalty));
 
-        new Float:staggerTime = GetConVarFloat(hMaxStaggerDurationCvar);
-        CreateTimer(staggerTime - STAGGER_TIME_EPS, ResetAbilityTimer, shovee);
-    }
+		if (zClass == L4D2Infected_Smoker
+			|| (zClass == L4D2Infected_Hunter && g_NoHunterM2))
+		{
+			return;
+		}
+		
+		new Float:staggerTime = GetConVarFloat(hMaxStaggerDurationCvar);
+		CreateTimer(staggerTime - STAGGER_TIME_EPS, ResetAbilityTimer, shovee);
+	}
 }
 
 public Action:ResetAbilityTimer(Handle:event, any:shovee) {
