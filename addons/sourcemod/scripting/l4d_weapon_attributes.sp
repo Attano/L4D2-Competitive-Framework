@@ -15,10 +15,13 @@ public Plugin:myinfo =
     description = "Allowing tweaking of the attributes of all weapons"
 };
 
-new iWeaponAttributes[MAX_ATTRS] = {
+new L4D2IntWeaponAttributes:iIntWeaponAttributes[MAX_ATTRS] = {
     L4D2IWA_Damage,
     L4D2IWA_Bullets,
     L4D2IWA_ClipSize,
+};
+
+new L4D2FloatWeaponAttributes:iFloatWeaponAttributes[MAX_ATTRS] = {
     L4D2FWA_MaxPlayerSpeed,
     L4D2FWA_SpreadPerShot,
     L4D2FWA_MaxSpread,
@@ -36,7 +39,6 @@ new iWeaponAttributes[MAX_ATTRS] = {
     L4D2FWA_CycleTime,
     L4D2FWA_PelletScatterPitch,
     L4D2FWA_PelletScatterYaw,
-    -1
 };
 
 new String:sWeaponAttrNames[MAX_ATTRS][32] = {
@@ -51,7 +53,7 @@ new String:sWeaponAttrNames[MAX_ATTRS][32] = {
     "Min standing spread",
     "Min in air spread",
     "Max movement spread",
-    "Penetraion num layers",
+    "Penetration num layers",
     "Penetration power",
     "Penetration max dist",
     "Char penetration max dist",
@@ -133,19 +135,19 @@ GetWeaponAttributeIndex( String:sAttrName[128] ) {
 }
 
 GetWeaponAttributeInt( const String:sWeaponName[], idx ) {
-    return L4D2_GetIntWeaponAttribute(sWeaponName, iWeaponAttributes[idx]);
+    return L4D2_GetIntWeaponAttribute(sWeaponName, iIntWeaponAttributes[idx]);
 }
 
 Float:GetWeaponAttributeFloat( const String:sWeaponName[], idx ) {
-    return L4D2_GetFloatWeaponAttribute(sWeaponName, iWeaponAttributes[idx]);
+    return L4D2_GetFloatWeaponAttribute(sWeaponName, iFloatWeaponAttributes[idx]);
 }
 
 SetWeaponAttributeInt( const String:sWeaponName[], idx, value ) {
-    L4D2_SetIntWeaponAttribute(sWeaponName, iWeaponAttributes[idx], value);
+    L4D2_SetIntWeaponAttribute(sWeaponName, iIntWeaponAttributes[idx], value);
 }
 
 SetWeaponAttributeFloat( const String:sWeaponName[], idx, Float:value ) {
-    L4D2_SetFloatWeaponAttribute(sWeaponName, iWeaponAttributes[idx], value);
+    L4D2_SetFloatWeaponAttribute(sWeaponName, iFloatWeaponAttributes[idx], value);
 }
 
 public Action:Weapon( args ) {
@@ -189,8 +191,8 @@ public Action:Weapon( args ) {
         SetWeaponAttributeInt(sWeaponNameFull, iAttrIdx, iValue);
         PrintToServer("%s for %s set to %d", sWeaponAttrNames[iAttrIdx], sWeaponName, iValue);
     }
-    else if ( iAttrIdx < MAX_ATTRS-1 ) {
-        SetWeaponAttributeFloat(sWeaponNameFull, iAttrIdx, fValue);
+    else if ( iAttrIdx < MAX_ATTRS ) {
+        SetWeaponAttributeFloat(sWeaponNameFull, iAttrIdx -3, fValue);
         PrintToServer("%s for %s set to %.2f", sWeaponAttrNames[iAttrIdx], sWeaponName, fValue);
     }
     else {
@@ -277,4 +279,3 @@ bool:IsTank( client ) {
 
     return false;
 }
-
