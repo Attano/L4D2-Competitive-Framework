@@ -25,7 +25,7 @@ public Plugin:myinfo =
     author = "Visor, Sir",
     version = "2.2",
     description = "Manages the water/gunfire slowdown for both teams",
-	url = "https://github.com/ConfoglTeam/ProMod"
+	url = "https://github.com/ConfoglTeam/Equilibrium"
 };
 
 public OnPluginStart() 

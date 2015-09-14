@@ -37,7 +37,7 @@ new     Float:      g_fPlayerStuck          [MAXPLAYERS + 1];                   
 new     Float:      g_fPlayerLocation       [MAXPLAYERS + 1][3];                        // where was the survivor last during the flight?
 
 new     Handle:     g_hCvarDeStuckTime                          = INVALID_HANDLE;       // convar: how long to wait and de-stuckify a punched player
-
+new 	Handle: 	tpsf_debug_print;
 
 public Plugin:myinfo = 
 {
@@ -71,7 +71,8 @@ public OnPluginStart()
     
     // cvars
     g_hCvarDeStuckTime = CreateConVar(      "sm_punchstuckfix_unstucktime",     "1.0",      "How many seconds to wait before detecting and unstucking a punched motionless player.", FCVAR_PLUGIN, true, 0.05, false);
-    
+    tpsf_debug_print = CreateConVar("tpsf_debug_print", "1","Enable the Debug Print?", FCVAR_PLUGIN, true, 0.0, true, 1.0);
+	
     // hooks
     HookEvent("round_start", RoundStart_Event, EventHookMode_PostNoCopy);
     
@@ -199,8 +200,7 @@ public Action: Timer_CheckPunch(Handle:hTimer, any:client)
                         g_fPlayerStuck[client] = 0.0;
 
                         CTerrorPlayer_WarpToValidPositionIfStuck(client);
-                        CPrintToChatAll("<{olive}TankPunchStuck{default}> Found {blue}%N{default} stuck after a punch. Warped him to a valid position.", client);
-
+                        if(GetConVarBool(tpsf_debug_print)) CPrintToChatAll("<{olive}TankPunchStuck{default}> Found {blue}%N{default} stuck after a punch. Warped him to a valid position.", client);
                         return Plugin_Stop;
                     }
                 }

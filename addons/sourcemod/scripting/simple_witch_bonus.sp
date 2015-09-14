@@ -17,6 +17,8 @@
 
 new     bool:           g_bLateLoad                                         = false;
 new     Handle:         g_hCvarBonus                                        = INVALID_HANDLE;
+new     Handle:         g_hCvarPrint                                        = INVALID_HANDLE;
+new     Handle:         g_hCvarBonusAlways                                  = INVALID_HANDLE;
 new     Handle:         g_hTrieEntityCreated                                = INVALID_HANDLE;
 new     Handle:         g_hWitchTrie                                        = INVALID_HANDLE;
 
@@ -32,7 +34,7 @@ public Plugin:myinfo =
     name = "Simple Witch Kill Bonus",
     author = "Tabun",
     description = "Gives bonus for witches getting killed without doing damage to survivors (uses pbonus).",
-    version = "0.9.1",
+    version = "0.9.2",
     url = "none"
 }
 
@@ -48,6 +50,8 @@ public OnPluginStart()
     HookEvent("witch_killed", Event_WitchKilled, EventHookMode_Post);
 
     g_hCvarBonus = CreateConVar("sm_simple_witch_bonus", "25", "Bonus points to award for clean witch kills.", FCVAR_PLUGIN, true, 0.0);
+    g_hCvarPrint = CreateConVar("sm_witch_bonus_print", "1", "Should we print when we award points for killing the witch?", FCVAR_PLUGIN, true, 0.0, true, 1.0);
+    g_hCvarBonusAlways = CreateConVar("sm_witch_bonus_always", "0", "Should you receive points when something other than survivors kills witch?", FCVAR_PLUGIN, true, 0.0, true, 1.0);
 
     g_hWitchTrie = CreateTrie();
     g_hTrieEntityCreated = CreateTrie();
@@ -97,7 +101,7 @@ public Action: Event_WitchKilled(Handle:event, const String:name[], bool:dontBro
     new attacker = GetClientOfUserId( GetEventInt(event, "userid") );
 
     // only award bonus if survivors deal the last blow
-    if ( !IS_VALID_SURVIVOR(attacker) ) {
+    if ( !IS_VALID_SURVIVOR(attacker) &&  GetConVarBool(g_hCvarBonusAlways) == false ) {
         return Plugin_Continue;
     }
     
@@ -129,8 +133,10 @@ public Action: OnTakeDamageByWitch(victim, &attacker, &inflictor, &Float:damage,
 stock GiveWitchBonus()
 {
     new iBonus = GetConVarInt(g_hCvarBonus);
-    
-    PrintToChatAll("\x01Killing the witch has awarded: \x05%d \x01points!", iBonus);
+    if(GetConVarBool(g_hCvarPrint) == true)
+	{
+        PrintToChatAll("\x01Killing the witch has awarded: \x05%d \x01points!", iBonus);
+    }
     PBONUS_AddRoundBonus(iBonus);
 }
 
