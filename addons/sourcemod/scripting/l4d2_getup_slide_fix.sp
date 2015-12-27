@@ -1,7 +1,7 @@
 #include <sourcemod>
 #include <sdkhooks>
 #include <sdktools>
-#include <left4downtown> // req 0.6
+#include <left4downtown>
 #include <l4d2util>
 
 new bool:isSurvivorStaggerBlocked[8];

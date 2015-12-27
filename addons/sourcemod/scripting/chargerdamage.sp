@@ -1,23 +1,3 @@
-/*
-	SourcePawn is Copyright (C) 2006-2008 AlliedModders LLC.  All rights reserved.
-	SourceMod is Copyright (C) 2006-2008 AlliedModders LLC.  All rights reserved.
-	Pawn and SMALL are Copyright (C) 1997-2008 ITB CompuPhase.
-	Source is Copyright (C) Valve Corporation.
-	All trademarks are property of their respective owners.
-
-	This program is free software: you can redistribute it and/or modify it
-	under the terms of the GNU General Public License as published by the
-	Free Software Foundation, either version 3 of the License, or (at your
-	option) any later version.
-
-	This program is distributed in the hope that it will be useful, but
-	WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	General Public License for more details.
-
-	You should have received a copy of the GNU General Public License along
-	with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 #pragma semicolon 1
 
 #include <sourcemod>
@@ -85,7 +65,8 @@ new Handle: hDmgFirst = INVALID_HANDLE;                         // damage for fi
 new Handle: hDmgSmash = INVALID_HANDLE;                         // damage for the smash-inpact (def.10)
 new Handle: hDmgStumble = INVALID_HANDLE;                       // damage for stumble
 new Handle: hDmgPound = INVALID_HANDLE;                         // damage for pound-slams (replaces natural cvar)
-new Handle: hDmgCappedVictim = INVALID_HANDLE;                  // damage for capped Survivors
+new Handle: hDmgCappedVictim = INVALID_HANDLE;                  // scratch damage for capped Survivors
+new Handle: hDmgIncappedPound = INVALID_HANDLE;                  // damage for incapped Survivors
 
 new bool: bChargerPunched[MAXPLAYERS + 1];                      // whether charger player got a punch in current life
 new bool: bChargerCharging[MAXPLAYERS + 1];                     // whether the charger is in a charge
@@ -106,8 +87,8 @@ public Plugin:myinfo =
     name = "Charger Damage",
     author = "Tabun, Jacob, Visor",
     description = "Charger damage modifier",
-    version = "0.3",
-    url = "nope"
+    version = "0.4",
+    url = "https://github.com/Attano/L4D2-Competitive-Framework"
 }
 
 /* -------------------------------
@@ -139,6 +120,7 @@ public OnPluginStart()
     hDmgStumble = CreateConVar("charger_dmg_stumble",      			"2",    "Damage for stumbled impact after a charge.", FCVAR_PLUGIN, true, 0.0);
     hDmgPound = CreateConVar("charger_dmg_pound",          			"15",    "Damage for pounds after charge/collision completed.", FCVAR_PLUGIN, true, 0.0);
     hDmgCappedVictim = CreateConVar("charger_dmg_cappedvictim",  	"8",    "Damage for capped Survivor victims.", FCVAR_PLUGIN, true, 0.0);
+    hDmgIncappedPound = CreateConVar("charger_dmg_incapped",  	"15",    "Damage for incapped victims.", FCVAR_PLUGIN, true, 0.0);
     
     // hooks
     HookEvent("round_start", RoundStart_Event, EventHookMode_PostNoCopy);
@@ -289,7 +271,7 @@ public Action:OnTakeDamage(victim, &attacker, &inflictor, &Float:damage, &damage
 	else if (damage == CHARGER_DMG_POUND && (damageForce[0] == 0.0 && damageForce[1] == 0.0 && damageForce[2] == 0.0))
 	{
 		// POUND
-		damage = GetConVarFloat(hDmgPound);
+		damage = IsIncapped(victim) ? GetConVarFloat(hDmgIncappedPound) : GetConVarFloat(hDmgPound);
 		return Plugin_Changed;
 	}
 	/*
@@ -362,4 +344,9 @@ bool:IsUnderAttack(survivor)
 			return true;
 	}
 	return false;
+}
+
+bool:IsIncapped(client)
+{
+	return bool:GetEntProp(client, Prop_Send, "m_isIncapacitated");
 }

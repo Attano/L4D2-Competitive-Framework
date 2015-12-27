@@ -12,7 +12,7 @@ public Plugin:myinfo =
 	name = "L4D2 No Hunter Deadstops",
 	author = "Visor",
 	description = "Self-descriptive",
-	version = "3.2",
+	version = "3.3",
 	url = "https://github.com/Attano/Equilibrium"
 };
 
@@ -91,6 +91,6 @@ bool:IsPlayingDeadstopAnimation(hunter)
 
 bool:HasTarget(hunter)
 {
-	new target = GetEntData(hunter, 16004);
+	new target = GetEntDataEnt2(hunter, 16004);
 	return (IsSurvivor(target) && IsPlayerAlive(target));
 }

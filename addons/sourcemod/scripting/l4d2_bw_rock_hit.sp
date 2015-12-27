@@ -47,6 +47,11 @@ public OnClientDisconnect(client)
 
 public Action:OnTakeDamage(victim, &attacker, &inflictor, &Float:damage, &damageType, &weapon, Float:damageForce[3], Float:damagePosition[3]) 
 {
+	// decl String:classname[64];
+	// GetEdictClassname(inflictor, classname, sizeof(classname));
+	// PrintToChatAll("Victim %d attacker %d inflictor %d damageType %d weapon %d", victim, attacker, inflictor, damageType, weapon);
+	// PrintToChatAll("Victim %N(%i/%i) attacker %N classname %s", victim, GetSurvivorPermanentHealth(victim), GetSurvivorTemporaryHealth(victim), attacker, classname);
+	
 	// Not what we need
 	if (!IsSurvivor(victim) || !IsTank(attacker) || !IsTankRock(inflictor))
 	{
@@ -62,6 +67,9 @@ public Action:OnTakeDamage(victim, &attacker, &inflictor, &Float:damage, &damage
 	// Gotcha
 	if (GetSurvivorTemporaryHealth(victim) <= GetConVarInt(FindConVar("vs_tank_damage")))
 	{
+		// SDKHooks_TakeDamage(inflictor, attacker, attacker, 300.0, DMG_CLUB, GetActiveWeapon(victim));
+		// AcceptEntityInput(inflictor, "Kill");
+		// StopSound(attacker, SNDCHAN_AUTO, "player/tank/attack/thrown_missile_loop_1.wav");
 		CTankRock__Detonate(inflictor);
 	}
 	return Plugin_Continue;

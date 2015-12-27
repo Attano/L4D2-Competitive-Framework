@@ -1,6 +1,7 @@
 #pragma semicolon 1
 
 #include <sourcemod>
+// #include <sdktools>
 #include <collisionhook>
 
 public Plugin:myinfo =
