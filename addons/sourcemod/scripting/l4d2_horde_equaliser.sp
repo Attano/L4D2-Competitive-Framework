@@ -32,7 +32,6 @@ public Plugin:myinfo =
 	url = "https://github.com/Attano/Equilibrium"
 };
 
-// [BUG] horde blocked during tank despite cvar at 0
 public OnPluginStart()
 {
 	new Handle:gamedata = LoadGameConfigFile("left4downtown.l4d2");
@@ -51,19 +50,7 @@ public OnPluginStart()
 	hCvarHordeCheckpointAnnounce = CreateConVar("l4d2_heq_checkpoint_sound", "1", "Play the incoming mob sound at checkpoints (each 1/4 of total commons killed off) to simulate L4D1 behaviour");
 
 	HookEvent("round_start", EventHook:OnRoundStart, EventHookMode_PostNoCopy);
-
-	// RegConsoleCmd("sm_test", TestCmd1);
 }
-
-// public Action:TestCmd1(client, args) 
-// {
-	// PrintToChatAll("Pending commons: %d", GetPendingMobCount());
-	// PrintToChatAll("Horde countdown: %d", GetHordeCountdown());
-	// PrintToChatAll("Commons so far: %d", commonTotal);
-	// PrintToChatAll("Is horde infinite: %d", IsInfiniteHordeActive());
-	// EmitSoundToAll(HORDE_SOUND);
-	// return Plugin_Handled;
-// }
 
 public OnMapStart()
 {
