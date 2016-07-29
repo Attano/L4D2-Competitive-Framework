@@ -22,7 +22,6 @@ public OnPluginStart()
 {
 	hCLeap_OnTouch = DHookCreate(CLEAP_ONTOUCH_OFFSET, HookType_Entity, ReturnType_Void, ThisPointer_CBaseEntity, CLeap_OnTouch);
 	DHookAddParam(hCLeap_OnTouch, HookParamType_CBaseEntity);
-	DHookAddEntityListener(ListenType_Created, OnEntityCreated);
 	
 	HookEvent("round_start", EventHook:OnRoundStart, EventHookMode_PostNoCopy);
 	HookEvent("player_shoved", OnPlayerShoved);
