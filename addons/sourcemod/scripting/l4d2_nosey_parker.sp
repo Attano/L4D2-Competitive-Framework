@@ -58,17 +58,17 @@ public OnConfigsExecuted()
     fGhostDelay = GetConVarFloat(FindConVar("z_ghost_delay_min"));
 }
 
-public Event_PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
+public Action:Event_PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 {
     new victim = GetClientOfUserId(GetEventInt(event, "userid"));
-    if (!IsInfected(victim) || IsTargetedSi(victim) < 0)
-        return;
-
-    new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-    if (attacker == 0 || !IsClientInGame(attacker) || !IsSurvivor(attacker) || IsFakeClient(attacker) || !IsPlayerAlive(attacker))
-        return;
-
-    iDamage[attacker][victim] += GetEventInt(event, "dmg_health");
+    if (IsInfected(victim) && IsTargetedSi(victim) > 0)
+	{
+		new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+		if (attacker > 0 && IsClientInGame(attacker) && IsSurvivor(attacker) && !IsFakeClient(attacker) && IsPlayerAlive(attacker))
+		{
+			iDamage[attacker][victim] += GetEventInt(event, "dmg_health");
+		}
+	}
 }
 
 public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)

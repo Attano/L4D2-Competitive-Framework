@@ -29,27 +29,24 @@ public OnMapStart()
 	}
 }
 
-public SIOnFire(Handle:event, const String:name[], bool:dontBroadcast)
+public Action:SIOnFire(Handle:event, const String:name[], bool:dontBroadcast)
 {
-    
     new client = GetClientOfUserId(GetEventInt(event, "userid"));
-    if(!IsValidClient(client) || !(GetClientTeam(client) == 3)) return;
-    
-    new dmgtype = GetEventInt(event,"type");
-    if(dmgtype != 8) return;
-	
-    if(GetEntProp(client, Prop_Send, "m_zombieClass") == 8) ExtinguishEntity(client);
+    if(IsValidClient(client) && (GetClientTeam(client) == 3) && GetEventInt(event,"type") == 8)
+	{
+		if(GetEntProp(client, Prop_Send, "m_zombieClass") == 8) ExtinguishEntity(client);
 
-    if(GetConVarInt(infected_fire_immunity) == 3) CreateTimer(1.0, Extinguish, client);
+		if(GetConVarInt(infected_fire_immunity) == 3) CreateTimer(1.0, Extinguish, client);
 
-    if(GetConVarInt(infected_fire_immunity) <= 2) ExtinguishEntity(client);
-    
-    if(GetConVarInt(infected_fire_immunity) == 1)
-    {
-        new CurHealth = GetClientHealth(client);
-        new DmgDone	= GetEventInt(event,"dmg_health");
-        SetEntityHealth(client,(CurHealth + DmgDone));
-    }
+		if(GetConVarInt(infected_fire_immunity) <= 2) ExtinguishEntity(client);
+		
+		if(GetConVarInt(infected_fire_immunity) == 1)
+		{
+			new CurHealth = GetClientHealth(client);
+			new DmgDone	= GetEventInt(event,"dmg_health");
+			SetEntityHealth(client,(CurHealth + DmgDone));
+		}
+	}
 }
  
 public Action:Extinguish(Handle:timer, any:client)

@@ -169,9 +169,9 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 	if (StrEqual(weapon, "melee") && IsSi(victim))
 	{
 		// SI Died
-		if (health <= 0 && GetConVarBool(cSurvivorMelee))
+		if (health <= 0 && GetConVarBool(cSurvivorMelee)
+		&& attacker > 0 && attacker <= MaxClients)
 		{
-			if (attacker <= 0 || attacker > MaxClients) return Plugin_Handled;
 			new String:clientModel[42];
 			GetClientModel(attacker, clientModel, sizeof(clientModel));
 			
@@ -203,8 +203,6 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 				new rndPick = GetRandomInt(0, MAX_ELLISSOUND);
 				EmitSoundToAll(sEllisSound[rndPick], attacker, SNDCHAN_VOICE);
 			}
-			//No Matching Survivors
-			else return Plugin_Continue;
 				
 			//L4D1 Survivor.. No Files yet
 			//else if (StrEqual(clientModel, "models/survivors/survivor_manager.mdl")) 
@@ -213,7 +211,6 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 			//else if (StrEqual(clientModel, "models/survivors/survivor_biker.mdl"))
 		}    
 	}
-	return Plugin_Continue;
 }	
 
 bool:IsSi(client) 

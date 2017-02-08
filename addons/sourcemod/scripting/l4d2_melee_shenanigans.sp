@@ -15,7 +15,7 @@
 new lastAnimSequence[MAXPLAYERS + 1];
 //Should initialise array as all false
 new bool:giveWeapon[MAXPLAYERS + 1];             
-new 	i = 0;
+new iTick = 0;
 
 public Plugin:myinfo =
 {
@@ -39,46 +39,44 @@ public Action:PlayerHit(Handle:event, String:event_name[], bool:dontBroadcast)
     if (IsSurvivor(PlayerID) && StrEqual(Weapon, "tank_claw"))
     {
         new activeweapon = GetEntPropEnt(PlayerID, Prop_Send, "m_hActiveWeapon");
-        if (!IsValidEdict(activeweapon)) return;
- 
-        decl String:weaponname[64];
-        GetEdictClassname(activeweapon, weaponname, sizeof(weaponname));
-        if (!StrEqual(weaponname, "weapon_melee", false)) return;		
-		if (GetPlayerWeaponSlot(PlayerID, 0) != -1)
+        if (IsValidEdict(activeweapon))
 		{
-			SDKHook(PlayerID, SDKHook_PostThink, OnThink);
+			decl String:weaponname[64];
+			GetEdictClassname(activeweapon, weaponname, sizeof(weaponname));	
+			
+			if (StrEqual(weaponname, "weapon_melee", false) && GetPlayerWeaponSlot(PlayerID, 0) != -1)
+			{
+				SDKHook(PlayerID, SDKHook_PostThink, OnThink);
+			}
 		}
-		return;
-		
-		
     }
 }
 
 public OnThink(client)
 {
-	if(i > 300)
-		{ 
-		i = 0;
+	if(iTick > 300)
+	{ 
+		iTick = 0;
 		SDKUnhook(client, SDKHook_PostThink, OnThink);
+	}
+	iTick = 1 + iTick;
+
+	new sequence = GetEntProp(client, Prop_Send, "m_nSequence");
+
+	if (!giveWeapon[client])
+	{
+		if ((lastAnimSequence[client] == SEQ_COACH_NICK && sequence != SEQ_COACH_NICK) || (lastAnimSequence[client] == SEQ_ELLIS && sequence != SEQ_ELLIS) || (lastAnimSequence[client] == SEQ_ROCHELLE   && sequence != SEQ_ROCHELLE)|| (lastAnimSequence[client] == SEQ_BILL_LOUIS   && sequence != SEQ_BILL_LOUIS)|| (lastAnimSequence[client] == SEQ_FRANCIS   && sequence != SEQ_FRANCIS)|| (lastAnimSequence[client] == SEQ_ZOEY   && sequence != SEQ_ZOEY))
+		{
+			giveWeapon[client] = true;
 		}
-	i = 1 + i;
-	
-    new sequence = GetEntProp(client, Prop_Send, "m_nSequence");
-    
-    if (!giveWeapon[client])
-    {
-        if ((lastAnimSequence[client] == SEQ_COACH_NICK && sequence != SEQ_COACH_NICK) || (lastAnimSequence[client] == SEQ_ELLIS && sequence != SEQ_ELLIS) || (lastAnimSequence[client] == SEQ_ROCHELLE   && sequence != SEQ_ROCHELLE)|| (lastAnimSequence[client] == SEQ_BILL_LOUIS   && sequence != SEQ_BILL_LOUIS)|| (lastAnimSequence[client] == SEQ_FRANCIS   && sequence != SEQ_FRANCIS)|| (lastAnimSequence[client] == SEQ_ZOEY   && sequence != SEQ_ZOEY))
-        {
-            giveWeapon[client] = true;
-        }
-    }
-    else
-    {
-        SwapToGun(client)
-        giveWeapon[client] = false;
-		i = 0;
-        SDKUnhook(client, SDKHook_PostThink, OnThink);
-    }
+	}
+	else
+	{
+		SwapToGun(client)
+		giveWeapon[client] = false;
+		iTick = 0;
+		SDKUnhook(client, SDKHook_PostThink, OnThink);
+	}
 	lastAnimSequence[client] = sequence;
 }
 

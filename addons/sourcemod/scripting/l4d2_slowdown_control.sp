@@ -93,19 +93,19 @@ public OnPluginStart()
 	HookEvent("round_end", RoundEnd);
 }
 
-public TankSpawn(Handle:event, const String:name[], bool:dontBroadcast) 
+public Action: TankSpawn(Handle:event, const String:name[], bool:dontBroadcast) 
 {
-	if (tankInPlay) 
-		return;
-		
-	tankInPlay = true;
-	if (GetConVarFloat(hCvarSdInwaterDuringTank) > 0.0) 
+	if (!tankInPlay) 
 	{
-		PrintToChatAll("\x05Water Slowdown\x01 has been reduced while Tank is in play.");
+		tankInPlay = true;
+		if (GetConVarFloat(hCvarSdInwaterDuringTank) > 0.0) 
+		{
+			PrintToChatAll("\x05Water Slowdown\x01 has been reduced while Tank is in play.");
+		}
 	}
 }
 
-public TankDeath(Handle:event, const String:name[], bool:dontBroadcast) 
+public Action: TankDeath(Handle:event, const String:name[], bool:dontBroadcast) 
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
 	if (IsInfected(client) && IsTank(client)) 
@@ -118,7 +118,7 @@ public TankDeath(Handle:event, const String:name[], bool:dontBroadcast)
 	}
 }
 
-public RoundEnd(Handle:event, const String:name[], bool:dontBroadcast) 
+public Action: RoundEnd(Handle:event, const String:name[], bool:dontBroadcast) 
 {
 	tankInPlay = false;
 }
@@ -129,27 +129,27 @@ public RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
  *
 **/
 
-public PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast) 
+public Action: PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast) 
 {
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (!IsInfected(client)) 
-		return;
-
-	new Float:slowdown = IsTank(client) ? GetActualValue(hCvarSdGunfireTank) : GetActualValue(hCvarSdGunfireSi);
-	if (slowdown == 1.0)
+	if (IsInfected(client)) 
 	{
-		ApplySlowdown(client, slowdown);
-	}
-	else if (slowdown > 0.0)
-	{
-		new damage = GetEventInt(event, "dmg_health");
-		decl String:weapon[64];
-		GetEventString(event, "weapon", weapon, sizeof(weapon));
+		new Float:slowdown = IsTank(client) ? GetActualValue(hCvarSdGunfireTank) : GetActualValue(hCvarSdGunfireSi);
+		if (slowdown == 1.0)
+		{
+			ApplySlowdown(client, slowdown);
+		}
+		else if (slowdown > 0.0)
+		{
+			new damage = GetEventInt(event, "dmg_health");
+			decl String:weapon[64];
+			GetEventString(event, "weapon", weapon, sizeof(weapon));
 
-		decl Float:scale;
-		decl Float:modifier;
-		GetScaleAndModifier(scale, modifier, weapon, damage);
-		ApplySlowdown(client, 1 - modifier * scale * slowdown);
+			decl Float:scale;
+			decl Float:modifier;
+			GetScaleAndModifier(scale, modifier, weapon, damage);
+			ApplySlowdown(client, 1 - modifier * scale * slowdown);
+		}
 	}
 }
 
