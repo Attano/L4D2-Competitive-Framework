@@ -245,38 +245,40 @@ public player_revive(Handle:event, const String:name[], bool:dontBroadcast) {
 }
 
 // A catch-all to handle damage that is not associated with an event. I use this instead of player_hurt because it ignores godframes.
-public Action:OnTakeDamage(victim, &attacker, &inflictor, &Float:damage, &damagetype) {
+public Action:OnTakeDamage(victim, &attacker, &inflictor, &Float:damage, &damagetype) 
+{
     new SurvivorCharacter:survivor = IdentifySurvivor(victim);
-    if (survivor == SC_NONE) return;
-    decl String:weapon[32];
-    GetEdictClassname(inflictor, weapon, sizeof(weapon));
-    if (strcmp(weapon, "weapon_tank_claw") == 0) {
-        if (playerState[survivor] == PlayerState:CHARGER_GETUP) {
-            interrupt[survivor] = true;
-        } else if (playerState[survivor] == PlayerState:MULTI_CHARGED) {
-            pendingGetups[survivor]++;
-        }
+    if (survivor != SC_NONE)
+	{
+		decl String:weapon[32];
+		GetEdictClassname(inflictor, weapon, sizeof(weapon));
+		if (strcmp(weapon, "weapon_tank_claw") == 0) {
+			if (playerState[survivor] == PlayerState:CHARGER_GETUP) {
+				interrupt[survivor] = true;
+			} else if (playerState[survivor] == PlayerState:MULTI_CHARGED) {
+				pendingGetups[survivor]++;
+			}
 
-        if (playerState[survivor] == PlayerState:TANK_ROCK_GETUP && GetConVarBool(rockPunchFix)) {
-            playerState[survivor] = PlayerState:TANK_PUNCH_FIX;
-        } else if (playerState[survivor] == PlayerState:JOCKEYED) {
-            playerState[survivor] = PlayerState:TANK_PUNCH_JOCKEY_FIX;
-            _TankLandTimer(victim);
-        } else {
-            playerState[survivor] = PlayerState:TANK_PUNCH_FLY;
-            // Watches and waits for the survivor to enter their getup animation. It is possible to skip the fly animation, so this can't be tracked by state-based logic.
-            _TankLandTimer(victim);
-        }
-    } else if (strcmp(weapon, "tank_rock") == 0) {
-        if (playerState[survivor] == PlayerState:CHARGER_GETUP) {
-            interrupt[survivor] = true;
-        } else if (playerState[survivor] == PlayerState:MULTI_CHARGED) {
-            pendingGetups[survivor]++;
-        }
-        playerState[survivor] = PlayerState:TANK_ROCK_GETUP;
-        _GetupTimer(victim);
-    }
-    return;
+			if (playerState[survivor] == PlayerState:TANK_ROCK_GETUP && GetConVarBool(rockPunchFix)) {
+				playerState[survivor] = PlayerState:TANK_PUNCH_FIX;
+			} else if (playerState[survivor] == PlayerState:JOCKEYED) {
+				playerState[survivor] = PlayerState:TANK_PUNCH_JOCKEY_FIX;
+				_TankLandTimer(victim);
+			} else {
+				playerState[survivor] = PlayerState:TANK_PUNCH_FLY;
+				// Watches and waits for the survivor to enter their getup animation. It is possible to skip the fly animation, so this can't be tracked by state-based logic.
+				_TankLandTimer(victim);
+			}
+		} else if (strcmp(weapon, "tank_rock") == 0) {
+			if (playerState[survivor] == PlayerState:CHARGER_GETUP) {
+				interrupt[survivor] = true;
+			} else if (playerState[survivor] == PlayerState:MULTI_CHARGED) {
+				pendingGetups[survivor]++;
+			}
+			playerState[survivor] = PlayerState:TANK_ROCK_GETUP;
+			_GetupTimer(victim);
+		}
+	}
 }
 
 // Detects when a player lands from a tank punch.

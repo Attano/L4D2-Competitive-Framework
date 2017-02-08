@@ -40,9 +40,7 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 
 bool:IsSi(client) 
 {
-    if (IsClientConnected(client)
-    && IsClientInGame(client)
-    && GetClientTeam(client) == 3) 
+    if (client > 0 && client <= MaxClients && IsClientInGame(client) && GetClientTeam(client) == 3) 
     {
         return true;
     }
