@@ -313,67 +313,67 @@ public Action:OnTakeDamageUndoFF(victim, &attacker, &inflictor, &Float:damage, &
 // Also announce damage, and undo guilty bot damage
 public Action:Event_PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	if (!g_EnabledFlags) return Plugin_Continue;
-
-	new victim = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (!IS_VALID_SURVIVOR(victim)) return Plugin_Continue;
-	
-	new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-	new dmg = GetEventInt(event, "dmg_health");
-	new currentPerm = GetEventInt(event, "health");
-	
-	decl String:weaponName[32];
-	GetEventString(event, "weapon", weaponName, sizeof(weaponName));
-		
-	if (g_DebugFlags & DEBUG_FLAG_HURT) Announce("PH: vic %N, atk %N, atkent %d, hlth %d, wep %s, dmg %d, hit %d, type %X", victim, attacker, GetEventInt(event, "attackerentid"), currentPerm, weaponName, dmg, GetEventInt(event, "hitgroup"), GetEventInt(event, "type"));
-	
-	// When incapped you continuously get hurt by the world, so we just ignore incaps altogether
-	if (dmg > 0 && !L4D_IsPlayerIncapacitated(victim))
+	if (g_EnabledFlags)
 	{
-		// Cycle the undo pointer when we have confirmed that the damage was actually taken
-		g_currentUndo[victim] = (g_currentUndo[victim] + 1) % UNDO_SIZE;
-		
-		// victim values are what OnTakeDamage expected us to have, current values are what the game gave us
-		new victimPerm = g_lastPerm[victim];
-		new victimTemp = g_lastTemp[victim];
-		new currentTemp = L4D_GetPlayerTempHealth(victim);
-
-		// If this feature is enabled, some portion of damage will be applied to the temp health
-		if (g_flPermFrac < 1.0 && victimPerm != currentPerm)
+		new victim = GetClientOfUserId(GetEventInt(event, "userid"));
+		if (IS_VALID_SURVIVOR(victim))
 		{
-			if (g_DebugFlags & DEBUG_FLAG_HURT) Announce("FRAC: Before %d / %d, after %d %d, dmg %d", currentPerm, currentTemp, victimPerm, victimTemp, dmg);
-
-			// make sure we don't give extra health
-			new totalHealthOld = currentPerm + currentTemp, totalHealthNew = victimPerm + victimTemp;
-			if (totalHealthOld == totalHealthNew)
+			new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
+			new dmg = GetEventInt(event, "dmg_health");
+			new currentPerm = GetEventInt(event, "health");
+			
+			decl String:weaponName[32];
+			GetEventString(event, "weapon", weaponName, sizeof(weaponName));
+				
+			if (g_DebugFlags & DEBUG_FLAG_HURT) Announce("PH: vic %N, atk %N, atkent %d, hlth %d, wep %s, dmg %d, hit %d, type %X", victim, attacker, GetEventInt(event, "attackerentid"), currentPerm, weaponName, dmg, GetEventInt(event, "hitgroup"), GetEventInt(event, "type"));
+			
+			// When incapped you continuously get hurt by the world, so we just ignore incaps altogether
+			if (dmg > 0 && !L4D_IsPlayerIncapacitated(victim))
 			{
-				SetEntityHealth(victim, victimPerm);
-				L4D_SetPlayerTempHealth(victim, victimTemp);
+				// Cycle the undo pointer when we have confirmed that the damage was actually taken
+				g_currentUndo[victim] = (g_currentUndo[victim] + 1) % UNDO_SIZE;
+				
+				// victim values are what OnTakeDamage expected us to have, current values are what the game gave us
+				new victimPerm = g_lastPerm[victim];
+				new victimTemp = g_lastTemp[victim];
+				new currentTemp = L4D_GetPlayerTempHealth(victim);
+
+				// If this feature is enabled, some portion of damage will be applied to the temp health
+				if (g_flPermFrac < 1.0 && victimPerm != currentPerm)
+				{
+					if (g_DebugFlags & DEBUG_FLAG_HURT) Announce("FRAC: Before %d / %d, after %d %d, dmg %d", currentPerm, currentTemp, victimPerm, victimTemp, dmg);
+
+					// make sure we don't give extra health
+					new totalHealthOld = currentPerm + currentTemp, totalHealthNew = victimPerm + victimTemp;
+					if (totalHealthOld == totalHealthNew)
+					{
+						SetEntityHealth(victim, victimPerm);
+						L4D_SetPlayerTempHealth(victim, victimTemp);
+					}
+				}
+			}
+			
+			// Announce damage, and check for guilty bots that slipped through OnTakeDamage
+			if (IS_VALID_SURVIVOR(attacker))
+			{
+				new type;
+				
+				// Unfortunately, the friendly fire event only fires *after* OnTakeDamage has been called so it can't be blocked in time
+				// So we must check here to see if the bots are guilty and undo the damage after-the-fact
+				if ((g_EnabledFlags & FFTYPE_STUPIDBOTS) && (g_stupidGuiltyBots[victim]))
+				{
+					UndoDamage(victim);
+					type = FFTYPE_STUPIDBOTS;
+				}
+				else
+				{
+					type = FFTYPE_NOTUNDONE;
+				}
+				
+				PrepareAnnounce(weaponName, victim, attacker, dmg, type, GetClientsDistance(victim, attacker));
 			}
 		}
 	}
-	
-	// Announce damage, and check for guilty bots that slipped through OnTakeDamage
-	if (IS_VALID_SURVIVOR(attacker))
-	{
-		new type;
-		
-		// Unfortunately, the friendly fire event only fires *after* OnTakeDamage has been called so it can't be blocked in time
-		// So we must check here to see if the bots are guilty and undo the damage after-the-fact
-		if ((g_EnabledFlags & FFTYPE_STUPIDBOTS) && (g_stupidGuiltyBots[victim]))
-		{
-			UndoDamage(victim);
-			type = FFTYPE_STUPIDBOTS;
-		}
-		else
-		{
-			type = FFTYPE_NOTUNDONE;
-		}
-		
-		PrepareAnnounce(weaponName, victim, attacker, dmg, type, GetClientsDistance(victim, attacker));
-	}
-
-	return Plugin_Continue;
 }
 
 // When a Survivor is incapped by damage, player_hurt will not fire
@@ -553,17 +553,17 @@ public Announce(const String:format[], any:...)
 // Also give the human some reaction time to realize the bot ran in front of them
 public Action:Event_FriendlyFire(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	if (!(g_EnabledFlags & FFTYPE_STUPIDBOTS)) return Plugin_Continue;
-
-	if (g_DebugFlags & DEBUG_FLAG_FF)		Announce("FF: victim %d, guilty %d, type %x", GetEventInt(event, "victim"), GetEventInt(event, "guilty"), GetEventInt(event, "type"));
-	new client = GetClientOfUserId(GetEventInt(event, "guilty"));
-	if (IsFakeClient(client))
+	if (g_EnabledFlags & FFTYPE_STUPIDBOTS)
 	{
-		g_stupidGuiltyBots[client] = true;
-		CreateTimer(0.4, StupidGuiltyBotDelay, client);
-		Announce("Undid damage (stupid bot)");
+		if (g_DebugFlags & DEBUG_FLAG_FF)		Announce("FF: victim %d, guilty %d, type %x", GetEventInt(event, "victim"), GetEventInt(event, "guilty"), GetEventInt(event, "type"));
+		new client = GetClientOfUserId(GetEventInt(event, "guilty"));
+		if (IsFakeClient(client))
+		{
+			g_stupidGuiltyBots[client] = true;
+			CreateTimer(0.4, StupidGuiltyBotDelay, client);
+			Announce("Undid damage (stupid bot)");
+		}
 	}
-	return Plugin_Continue;
 }
 
 public Action:StupidGuiltyBotDelay(Handle:timer, any:client)
