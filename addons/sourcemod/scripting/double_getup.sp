@@ -168,7 +168,7 @@ public jockey_clear(Handle:event, const String:name[], bool:dontBroadcast) {
 public smoker_clear(Handle:event, const String:name[], bool:dontBroadcast) {
     new client = GetClientOfUserId(GetEventInt(event, "victim"));
     new SurvivorCharacter:survivor = IdentifySurvivor(client);
-    if (survivor != SC_NONE && playerState[survivor] == PlayerState:INCAPPED)
+    if (survivor != SC_NONE && playerState[survivor] != PlayerState:INCAPPED)
 	{
 		playerState[survivor] = PlayerState:UPRIGHT;
 		_CancelGetup(client);
