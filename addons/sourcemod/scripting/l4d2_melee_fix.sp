@@ -33,7 +33,6 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
         if(class <= 5 && health > 0)
         {
 			//Award damage to Attacker accordingly.
-            //SDKHooks_TakeDamage(victim, 0, attacker, float(health));
             new Handle:hData = CreateDataPack();
             WritePackCell(hData, victim);
             WritePackCell(hData, attacker);
@@ -55,7 +54,6 @@ public ApplyDamageFrameCallback(any:hData)
         SDKHooks_TakeDamage(victim, 0, attacker, float(health));
     }
 }
- 
 
 bool:IsSi(client) 
 {
