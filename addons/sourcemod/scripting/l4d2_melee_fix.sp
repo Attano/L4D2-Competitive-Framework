@@ -32,30 +32,11 @@ public Action:PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
         //Testing showed that only the L4D1 SI; Hunter, Smoker and Boomer have issues with correct Melee Damage values being applied, check for Spitter and Jockey anyway!
         if(class <= 5 && health > 0)
         {
-			//Award damage to Attacker accordingly.
-            //SDKHooks_TakeDamage(victim, 0, attacker, float(health));
-            new Handle:hData = CreateDataPack();
-            WritePackCell(hData, victim);
-            WritePackCell(hData, attacker);
-            WritePackCell(hData, health);
-            RequestFrame(ApplyDamageFrameCallback, hData);
+            //Award damage to Attacker accordingly.
+            SDKHooks_TakeDamage(victim, 0, attacker, float(health));
         }    
     }
 }	
-
-public ApplyDamageFrameCallback(any:hData)
-{
-    ResetPack(hData, false);
-    new victim = ReadPackCell(hData);
-    new attacker = ReadPackCell(hData);
-    new health = ReadPackCell(hData);
-    CloseHandle(hData);
-    if (IsClientInGame(victim) && IsPlayerAlive(victim) && IsClientInGame(attacker))
-    {
-        SDKHooks_TakeDamage(victim, 0, attacker, float(health));
-    }
-}
- 
 
 bool:IsSi(client) 
 {
