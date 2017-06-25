@@ -305,8 +305,14 @@ public Action:OnTakeDamageUndoFF(victim, &attacker, &inflictor, &Float:damage, &
 		}
 	}
 	
-	if (undone) return Plugin_Handled;
-	return Plugin_Continue;
+	if (undone)
+	{
+		return Plugin_Handled;
+	}
+	else 
+	{
+		return Plugin_Continue;
+	}
 }
 
 // Apply fractional permanent damage here
