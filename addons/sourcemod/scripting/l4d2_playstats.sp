@@ -3217,7 +3217,7 @@ stock DisplayStatsMVPChat( client, bool:bRound = true, bool:bTeam = true, iTeam 
                         );
                 } else {
                     
-					int iSIKillsPercent = RoundFloat( (bRound) ? 
+					new iSIKillsPercent = RoundFloat( (bRound) ? 
                                     ((float(g_strRoundPlayerData[index][team][plySIKilled]) / float(g_strRoundData[g_iRound][team][rndSIKilled])) * 100) : 
                                     ((float(g_strPlayerData[index][plySIKilled]) / float(g_strAllRoundData[team][rndSIKilled])) * 100) 
                                 );
@@ -3292,7 +3292,7 @@ stock DisplayStatsMVPChat( client, bool:bRound = true, bool:bTeam = true, iTeam 
                         );
                 } else {
                     
-					int iCIKillsPercent = RoundFloat( (bRound) ? 
+					new iCIKillsPercent = RoundFloat( (bRound) ? 
                                     ((float(g_strRoundPlayerData[index][team][plyCommon]) / float(g_strRoundData[g_iRound][team][rndCommon])) * 100) :
                                     ((float(g_strPlayerData[index][plyCommon]) / float(g_strAllRoundData[team][rndCommon])) * 100) 
                                 );
@@ -3430,7 +3430,7 @@ String: GetMVPChatString( bool:bRound = true, bool:bTeam = true, iTeam = -1 )
                         );
                 } else {
                     
-					int iSIKillsPercent = RoundFloat( (bRound) ?
+					new iSIKillsPercent = RoundFloat( (bRound) ?
                                     ((float(g_strRoundPlayerData[mvp_SI][team][plySIKilled]) / float(g_strRoundData[g_iRound][team][rndSIKilled])) * 100) :
                                     ((float(g_strPlayerData[mvp_SI][plySIKilled]) / float(g_strAllRoundData[team][rndSIKilled])) * 100) 
                                 );
@@ -3489,7 +3489,7 @@ String: GetMVPChatString( bool:bRound = true, bool:bTeam = true, iTeam = -1 )
                         );
                 } else {
                     
-					int iCIKillsdPercent = RoundFloat( (bRound) ? 
+					new iCIKillsdPercent = RoundFloat( (bRound) ? 
                                     ((float(g_strRoundPlayerData[mvp_Common][team][plyCommon]) / float(g_strRoundData[g_iRound][team][rndCommon])) * 100) :
                                     ((float(g_strPlayerData[mvp_Common][plyCommon]) / float(g_strAllRoundData[team][rndCommon])) * 100) 
                                 );
