@@ -77,6 +77,9 @@ public OnPluginStart()
 
 	AddCommandListener(Vote_Listener, "vote");
 	AddCommandListener(Vote_Listener, "callvote");
+	
+	AddCommandListener(ServerShutDown_Listener, "quit");
+	AddCommandListener(ServerShutDown_Listener, "_restart");
 
 	survivor_limit = FindConVar("survivor_limit");
 	SetConVarBounds(survivor_limit, ConVarBound_Upper, false);
@@ -87,6 +90,11 @@ public OnPluginStart()
 
 	l4d_pm_supress_spectate = CreateConVar("l4d_pm_supress_spectate", "0", "Don't print messages when players spectate", FCVAR_PLUGIN, true, 0.0, true, 1.0);
 	l4d_respec_cooldown = CreateConVar("l4d_respec_cooldown", "5", "Seconds of cooldown after respec is used on a spectator", FCVAR_PLUGIN, true /*hasmin*/, 0.0, true /*hasmax*/, 600.0);
+}
+
+public Action:ServerShutDown_Listener(client, const String:command[], argc)
+{
+	isMapActive = false;
 }
 
 public OnMapStart()

@@ -212,7 +212,7 @@
 
 
 // types of statistic table(sets)
-enum _:strStatType
+enum strStatType
 {
     typGeneral,
     typMVP,
@@ -224,148 +224,148 @@ enum _:strStatType
 };
 
 // information for entire game
-enum _:strGameData
+enum strGameData
 {
-            gmFailed,               // survivors lost the mission * times
-            gmStartTime             // GetTime() value when starting
+	gmFailed,               // survivors lost the mission * times
+	gmStartTime             // GetTime() value when starting
 };
 
 // information per round
-enum _:strRoundData
+enum strRoundData
 {
-            rndRestarts,            // how many times retried?
-            rndPillsUsed,
-            rndKitsUsed,
-            rndDefibsUsed,
-            rndCommon,
-            rndSIKilled,
-            rndSIDamage,
-            rndSISpawned,
-            rndWitchKilled,
-            rndTankKilled,
-            rndIncaps,              // 10
-            rndDeaths,
-            rndFFDamageTotal,
-            rndStartTime,           // GetTime() value when starting    
-            rndEndTime,             // GetTime() value when done
-            rndStartTimePause,
-            rndStopTimePause,
-            rndStartTimeTank,
-            rndStopTimeTank
+	rndRestarts,            // how many times retried?
+	rndPillsUsed,
+	rndKitsUsed,
+	rndDefibsUsed,
+	rndCommon,
+	rndSIKilled,
+	rndSIDamage,
+	rndSISpawned,
+	rndWitchKilled,
+	rndTankKilled,
+	rndIncaps,              // 10
+	rndDeaths,
+	rndFFDamageTotal,
+	rndStartTime,           // GetTime() value when starting    
+	rndEndTime,             // GetTime() value when done
+	rndStartTimePause,
+	rndStopTimePause,
+	rndStartTimeTank,
+	rndStopTimeTank
 };
 #define MAXRNDSTATS                 18
 
 // information per player
-enum _:strPlayerData
+enum strPlayerData
 {
-            plyShotsShotgun,        // 0 pellets
-            plyShotsSmg,            // all bullets from smg/rifle
-            plyShotsSniper,         // all bullets from snipers
-            plyShotsPistol,         // all bullets from pistol/magnum
-            plyHitsShotgun,
-            plyHitsSmg,
-            plyHitsSniper,
-            plyHitsPistol,
-            plyHeadshotsSmg,        // headshots for everything but on tank
-            plyHeadshotsSniper,
-            plyHeadshotsPistol,     // 10
-            plyHeadshotsSISmg,      // headshots for SI only
-            plyHeadshotsSISniper,
-            plyHeadshotsSIPistol,
-            plyHitsSIShotgun,       // all hits on special infected (not tank)
-            plyHitsSISmg,
-            plyHitsSISniper,
-            plyHitsSIPistol,
-            plyHitsTankShotgun,     // all hits on tank
-            plyHitsTankSmg,         // useful for getting real headshot count (leave tank out of it)
-            plyHitsTankSniper,      // 20
-            plyHitsTankPistol,
-            plyCommon,
-            plyCommonTankUp,
-            plySIKilled,
-            plySIKilledTankUp,
-            plySIDamage,
-            plySIDamageTankUp,
-            plyIncaps,
-            plyDied,
-            plySkeets,              // 30 skeets, full
-            plySkeetsHurt,
-            plySkeetsMelee,
-            plyLevels,              // charger levels, full
-            plyLevelsHurt,
-            plyPops,                // boomer pops (pre puke)
-            plyCrowns,
-            plyCrownsHurt,          // non-full crowns 
-            plyShoves,              // count every shove
-            plyDeadStops,
-            plyTongueCuts,          // 40 only real cuts
-            plySelfClears,
-            plyFallDamage,
-            plyDmgTaken,
-            plyFFGiven,
-            plyFFTaken,
-            plyFFHits,              // total amount of shotgun blasts / bullets / etc
-            plyTankDamage,          // survivor damage to tank
-            plyWitchDamage,
-            plyMeleesOnTank,
-            plyRockSkeets,          // 50
-            plyRockEats,
-            plyFFGivenPellet,
-            plyFFGivenBullet,
-            plyFFGivenSniper,
-            plyFFGivenMelee,
-            plyFFGivenFire,
-            plyFFGivenIncap,
-            plyFFGivenOther,
-            plyFFGivenSelf,
-            plyFFTakenPellet,       // 60
-            plyFFTakenBullet,
-            plyFFTakenSniper,
-            plyFFTakenMelee,
-            plyFFTakenFire,
-            plyFFTakenIncap,
-            plyFFTakenOther,
-            plyFFGivenTotal,
-            plyFFTakenTotal,
-            plyClears,              //      amount of clears (under a min)
-            plyAvgClearTime,        // 70   average time it takes to clear someone (* 1000 so it doesn't have to be a float)
-            plyTimeStartPresent,    //      time present (on the team)
-            plyTimeStopPresent,     //      if stoptime is 0, then it's NOW, ongoing
-            plyTimeStartAlive,
-            plyTimeStopAlive,
-            plyTimeStartUpright,    //      time not capped
-            plyTimeStopUpright
+	plyShotsShotgun,        // 0 pellets
+	plyShotsSmg,            // all bullets from smg/rifle
+	plyShotsSniper,         // all bullets from snipers
+	plyShotsPistol,         // all bullets from pistol/magnum
+	plyHitsShotgun,
+	plyHitsSmg,
+	plyHitsSniper,
+	plyHitsPistol,
+	plyHeadshotsSmg,        // headshots for everything but on tank
+	plyHeadshotsSniper,
+	plyHeadshotsPistol,     // 10
+	plyHeadshotsSISmg,      // headshots for SI only
+	plyHeadshotsSISniper,
+	plyHeadshotsSIPistol,
+	plyHitsSIShotgun,       // all hits on special infected (not tank)
+	plyHitsSISmg,
+	plyHitsSISniper,
+	plyHitsSIPistol,
+	plyHitsTankShotgun,     // all hits on tank
+	plyHitsTankSmg,         // useful for getting real headshot count (leave tank out of it)
+	plyHitsTankSniper,      // 20
+	plyHitsTankPistol,
+	plyCommon,
+	plyCommonTankUp,
+	plySIKilled,
+	plySIKilledTankUp,
+	plySIDamage,
+	plySIDamageTankUp,
+	plyIncaps,
+	plyDied,
+	plySkeets,              // 30 skeets, full
+	plySkeetsHurt,
+	plySkeetsMelee,
+	plyLevels,              // charger levels, full
+	plyLevelsHurt,
+	plyPops,                // boomer pops (pre puke)
+	plyCrowns,
+	plyCrownsHurt,          // non-full crowns 
+	plyShoves,              // count every shove
+	plyDeadStops,
+	plyTongueCuts,          // 40 only real cuts
+	plySelfClears,
+	plyFallDamage,
+	plyDmgTaken,
+	plyFFGiven,
+	plyFFTaken,
+	plyFFHits,              // total amount of shotgun blasts / bullets / etc
+	plyTankDamage,          // survivor damage to tank
+	plyWitchDamage,
+	plyMeleesOnTank,
+	plyRockSkeets,          // 50
+	plyRockEats,
+	plyFFGivenPellet,
+	plyFFGivenBullet,
+	plyFFGivenSniper,
+	plyFFGivenMelee,
+	plyFFGivenFire,
+	plyFFGivenIncap,
+	plyFFGivenOther,
+	plyFFGivenSelf,
+	plyFFTakenPellet,       // 60
+	plyFFTakenBullet,
+	plyFFTakenSniper,
+	plyFFTakenMelee,
+	plyFFTakenFire,
+	plyFFTakenIncap,
+	plyFFTakenOther,
+	plyFFGivenTotal,
+	plyFFTakenTotal,
+	plyClears,              //      amount of clears (under a min)
+	plyAvgClearTime,        // 70   average time it takes to clear someone (* 1000 so it doesn't have to be a float)
+	plyTimeStartPresent,    //      time present (on the team)
+	plyTimeStopPresent,     //      if stoptime is 0, then it's NOW, ongoing
+	plyTimeStartAlive,
+	plyTimeStopAlive,
+	plyTimeStartUpright,    //      time not capped
+	plyTimeStopUpright
 };
 #define MAXPLYSTATS                 76
 
 // information per infected player (during other team's survivor round)
-enum _:strInfData
+enum()
 {
-            infDmgTotal,            //      including on incapped, excluding all tank damage!
-            infDmgUpright,          // 1
-            infDmgTank,             //      only upright
-            infDmgTankIncap,        //      only incapped
-            infDmgScratch,          //      only upright
-            infDmgSpit,             //      only upright
-            infDmgBoom,             //      only upright
-            infDmgTankUp,           //      only upright, excluding the tank itself
-            infHunterDPs,
-            infHunterDPDmg,
-            infJockeyDPs,           // 10
-            infDeathCharges,        
-            infBooms,               //      boomed survivors
-            infLedged,              //      survivors ledged
-            infCommon,              //      common killed by SI
-            infSpawns,
-            infSpawnSmoker,
-            infSpawnBoomer,
-            infSpawnHunter,
-            infSpawnCharger,
-            infSpawnSpitter,        // 20
-            infSpawnJockey,
-            infTankPasses,
-            infTimeStartPresent,    //      time present (on the team)
-            infTimeStopPresent,     //      if stoptime is 0, then it's NOW, ongoing
+	infDmgTotal,            //      including on incapped, excluding all tank damage!
+	infDmgUpright,          // 1
+	infDmgTank,             //      only upright
+	infDmgTankIncap,        //      only incapped
+	infDmgScratch,          //      only upright
+	infDmgSpit,             //      only upright
+	infDmgBoom,             //      only upright
+	infDmgTankUp,           //      only upright, excluding the tank itself
+	infHunterDPs,
+	infHunterDPDmg,
+	infJockeyDPs,           // 10
+	infDeathCharges,        
+	infBooms,               //      boomed survivors
+	infLedged,              //      survivors ledged
+	infCommon,              //      common killed by SI
+	infSpawns,
+	infSpawnSmoker,
+	infSpawnBoomer,
+	infSpawnHunter,
+	infSpawnCharger,
+	infSpawnSpitter,        // 20
+	infSpawnJockey,
+	infTankPasses,
+	infTimeStartPresent,    //      time present (on the team)
+	infTimeStopPresent,     //      if stoptime is 0, then it's NOW, ongoing
 };
 #define MAXINFSTATS                 24
 
@@ -3216,7 +3216,22 @@ stock DisplayStatsMVPChat( client, bool:bRound = true, bool:bTeam = true, iTeam 
                                 )
                         );
                 } else {
-                    Format(tmpBuffer, sizeof(tmpBuffer), "[MVP%s] Your rank - SI: #\x03%d \x01(\x05%d \x01dmg [\x04%i%%\x01],\x05 %d \x01kills [\x04%i%%\x01])",
+                    
+					new iSIKillsPercent = RoundFloat( (bRound) ? 
+                                    ((float(g_strRoundPlayerData[index][team][plySIKilled]) / float(g_strRoundData[g_iRound][team][rndSIKilled])) * 100) : 
+                                    ((float(g_strPlayerData[index][plySIKilled]) / float(g_strAllRoundData[team][rndSIKilled])) * 100) 
+                                );
+								
+					if (iSIKillsPercent < 0)
+					{
+						iSIKillsPercent = 0;
+					}
+					else if (iSIKillsPercent > 100)
+					{
+						iSIKillsPercent = 100;
+					}
+					
+					Format(tmpBuffer, sizeof(tmpBuffer), "[MVP%s] Your rank - SI: #\x03%d \x01(\x05%d \x01dmg [\x04%i%%\x01],\x05 %d \x01kills [\x04%i%%\x01])",
                             (bRound) ? "" : " - Game",
                             (i+1),
                             (bRound) ? g_strRoundPlayerData[index][team][plySIDamage] : g_strPlayerData[index][plySIDamage],
@@ -3225,10 +3240,7 @@ stock DisplayStatsMVPChat( client, bool:bRound = true, bool:bTeam = true, iTeam 
                                     ((float(g_strPlayerData[index][plySIDamage]) / float(g_strAllRoundData[team][rndSIDamage])) * 100) 
                                 ),
                             (bRound) ? g_strRoundPlayerData[index][team][plySIKilled] : g_strPlayerData[index][plySIKilled],
-                            RoundFloat( (bRound) ? 
-                                    ((float(g_strRoundPlayerData[index][team][plySIKilled]) / float(g_strRoundData[g_iRound][team][rndSIKilled])) * 100) : 
-                                    ((float(g_strPlayerData[index][plySIKilled]) / float(g_strAllRoundData[team][rndSIKilled])) * 100) 
-                                )
+                            iSIKillsPercent
                         );
                 }
                 PrintToChat( found, "\x01%s", tmpBuffer );
@@ -3279,14 +3291,26 @@ stock DisplayStatsMVPChat( client, bool:bRound = true, bool:bTeam = true, iTeam 
                                 )
                         );
                 } else {
-                    Format(tmpBuffer, sizeof(tmpBuffer), "[MVP%s] Your rank - CI: #\x03%d \x01(\x05 %d \x01kills [\x04%i%%\x01])",
+                    
+					new iCIKillsPercent = RoundFloat( (bRound) ? 
+                                    ((float(g_strRoundPlayerData[index][team][plyCommon]) / float(g_strRoundData[g_iRound][team][rndCommon])) * 100) :
+                                    ((float(g_strPlayerData[index][plyCommon]) / float(g_strAllRoundData[team][rndCommon])) * 100) 
+                                );
+								
+					if (iCIKillsPercent < 0)
+					{
+						iCIKillsPercent = 0;
+					}
+					else if (iCIKillsPercent > 100)
+					{
+						iCIKillsPercent = 100;
+					}			
+					
+					Format(tmpBuffer, sizeof(tmpBuffer), "[MVP%s] Your rank - CI: #\x03%d \x01(\x05 %d \x01kills [\x04%i%%\x01])",
                             (bRound) ? "" : " - Game",
                             (i+1),
                             (bRound) ? g_strRoundPlayerData[index][team][plyCommon] : g_strPlayerData[index][plyCommon],
-                            RoundFloat( (bRound) ? 
-                                    ((float(g_strRoundPlayerData[index][team][plyCommon]) / float(g_strRoundData[g_iRound][team][rndCommon])) * 100) :
-                                    ((float(g_strPlayerData[index][plyCommon]) / float(g_strAllRoundData[team][rndCommon])) * 100) 
-                                )
+                            iCIKillsPercent
                         );
                 }
                 PrintToChat( found, "\x01%s", tmpBuffer );
@@ -3405,7 +3429,22 @@ String: GetMVPChatString( bool:bRound = true, bool:bTeam = true, iTeam = -1 )
                                 )
                         );
                 } else {
-                    Format(tmpBuffer, sizeof(tmpBuffer), "[MVP%s] SI:\x03 %s \x01(\x05%d \x01dmg[\x04%i%%\x01],\x05 %d \x01kills [\x04%i%%\x01])\n",
+                    
+					new iSIKillsPercent = RoundFloat( (bRound) ?
+                                    ((float(g_strRoundPlayerData[mvp_SI][team][plySIKilled]) / float(g_strRoundData[g_iRound][team][rndSIKilled])) * 100) :
+                                    ((float(g_strPlayerData[mvp_SI][plySIKilled]) / float(g_strAllRoundData[team][rndSIKilled])) * 100) 
+                                );
+								
+					if (iSIKillsPercent < 0)
+					{
+						iSIKillsPercent = 0;
+					}
+					else if (iSIKillsPercent > 100)
+					{
+						iSIKillsPercent = 100;
+					}
+					
+					Format(tmpBuffer, sizeof(tmpBuffer), "[MVP%s] SI:\x03 %s \x01(\x05%d \x01dmg[\x04%i%%\x01],\x05 %d \x01kills [\x04%i%%\x01])\n",
                             (bRound) ? "" : " - Game",
                             g_sPlayerName[mvp_SI],
                             (bRound) ? g_strRoundPlayerData[mvp_SI][team][plySIDamage] : g_strPlayerData[mvp_SI][plySIDamage],
@@ -3414,10 +3453,7 @@ String: GetMVPChatString( bool:bRound = true, bool:bTeam = true, iTeam = -1 )
                                     ((float(g_strPlayerData[mvp_SI][plySIDamage]) / float(g_strAllRoundData[team][rndSIDamage])) * 100) 
                                 ),
                             (bRound) ? g_strRoundPlayerData[mvp_SI][team][plySIKilled] : g_strPlayerData[mvp_SI][plySIKilled],
-                            RoundFloat( (bRound) ?
-                                    ((float(g_strRoundPlayerData[mvp_SI][team][plySIKilled]) / float(g_strRoundData[g_iRound][team][rndSIKilled])) * 100) :
-                                    ((float(g_strPlayerData[mvp_SI][plySIKilled]) / float(g_strAllRoundData[team][rndSIKilled])) * 100) 
-                                )
+                            iSIKillsPercent
                         );
                 }
                 StrCat(printBuffer, sizeof(printBuffer), tmpBuffer);
@@ -3452,14 +3488,26 @@ String: GetMVPChatString( bool:bRound = true, bool:bTeam = true, iTeam = -1 )
                                 )
                         );
                 } else {
-                    Format(tmpBuffer, sizeof(tmpBuffer), "[MVP%s] CI:\x03 %s \x01(\x05%d \x01common [\x04%i%%\x01])\n",
+                    
+					new iCIKillsdPercent = RoundFloat( (bRound) ? 
+                                    ((float(g_strRoundPlayerData[mvp_Common][team][plyCommon]) / float(g_strRoundData[g_iRound][team][rndCommon])) * 100) :
+                                    ((float(g_strPlayerData[mvp_Common][plyCommon]) / float(g_strAllRoundData[team][rndCommon])) * 100) 
+                                );
+	
+					if (iCIKillsdPercent < 0)
+					{
+						iCIKillsdPercent = 0;
+					}
+					else if (iCIKillsdPercent > 100)
+					{
+						iCIKillsdPercent = 100;
+					}
+	
+					Format(tmpBuffer, sizeof(tmpBuffer), "[MVP%s] CI:\x03 %s \x01(\x05%d \x01common [\x04%i%%\x01])\n",
                             (bRound) ? "" : " - Game",
                             g_sPlayerName[mvp_Common],
                             (bRound) ? g_strRoundPlayerData[mvp_Common][team][plyCommon] : g_strPlayerData[mvp_Common][plyCommon],
-                            RoundFloat( (bRound) ? 
-                                    ((float(g_strRoundPlayerData[mvp_Common][team][plyCommon]) / float(g_strRoundData[g_iRound][team][rndCommon])) * 100) :
-                                    ((float(g_strPlayerData[mvp_Common][plyCommon]) / float(g_strAllRoundData[team][rndCommon])) * 100) 
-                                )
+                            iCIKillsdPercent
                         );
                 }
                 StrCat(printBuffer, sizeof(printBuffer), tmpBuffer);
